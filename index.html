@@ -1,27 +1,329 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
- <meta charset="UTF-8" />
- <meta name="viewport" content="width=device-width, initial-scale=1.0" />
- <title>TickerStats</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TickerStats</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* Global Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Roboto', sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f4f4f4;
+      scroll-behavior: smooth;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+    .container {
+      max-width: 1800px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    /* Hero Section with Dynamic Background */
+    .hero {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(270deg, #0077b6, #00b4d8, #90e0ef, #0077b6);
+      background-size: 600% 600%;
+      animation: gradientAnimation 15s ease infinite;
+      z-index: -1;
+    }
+    @keyframes gradientAnimation {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .hero-content h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    .hero-content p {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+    }
+    .hero-content button {
+      padding: 12px 30px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 30px;
+      background: #fff;
+      color: #0077b6;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .hero-content button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    /* Ticker Input Section */
+    .ticker-section {
+      padding: 60px 20px;
+      background: #fff;
+      margin: 20px 10px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .ticker-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+    .ticker-form, .ticker-data {
+      flex: 1 1 300px;
+      background: #e9f1f7;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .ticker-form h2, .ticker-data h2 {
+      margin-bottom: 20px;
+      color: #0077b6;
+    }
+    .ticker-form input[type="text"] {
+      width: calc(100% - 20px);
+      padding: 10px;
+      font-size: 1rem;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .ticker-form button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+      background: #0077b6;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .ticker-form button:hover {
+      background: #005f8c;
+    }
+    #error-message {
+      margin-top: 10px;
+      color: red;
+    }
+    .ticker-data p {
+      margin-bottom: 10px;
+      font-size: 1rem;
+    }
+
+    /* Excel Export Section */
+    .export-section {
+      padding: 60px 20px;
+      background: #fff;
+      margin: 20px 10px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .export-section h2 {
+      color: #0077b6;
+      margin-bottom: 20px;
+    }
+    .export-section p {
+      font-size: 1rem;
+      margin-bottom: 20px;
+    }
+    .export-section button {
+      padding: 12px 30px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 30px;
+      background: #0077b6;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .export-section button:hover {
+      background: #005f8c;
+    }
+
+    /* FAQ Accordion Section */
+    .faq-section {
+      padding: 60px 20px;
+      background: #fff;
+      margin: 20px 10px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .faq-section h2 {
+      text-align: center;
+      color: #0077b6;
+      margin-bottom: 30px;
+    }
+    .faq-item {
+      border-bottom: 1px solid #ddd;
+      padding: 15px 0;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .faq-item:last-child {
+      border-bottom: none;
+    }
+    .faq-item:hover {
+      background: #f9f9f9;
+    }
+    .faq-item h3 {
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+    }
+    .faq-item p {
+      display: none;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      color: #555;
+    }
+
+    /* Footer */
+    .footer-section {
+      text-align: center;
+      margin: 20px 10px;
+      font-size: 0.9rem;
+      color: #777;
+      border-top: 1px solid #ddd;
+      max-width: 1200px;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+      .ticker-container {
+        flex-direction: column;
+      }
+    }
+
+    .scroll-to {
+        margin: 0;
+    }
+  </style>
 </head>
 <body>
- <div>
- <header>
- <h1>TickerStats</h1>
- </header>
- <section>
- <input type="text" placeholder="Enter stock ticker symbol" />
- <button>Convert to Spreadsheet</button>
- </section>
- <section>
- <h2>How to Use</h2>
- <ol>
- <li>Enter the stock ticker symbol in the input field above.</li>
- <li>Click the "Convert to Spreadsheet" button.</li>
- <li>A spreadsheet with detailed stock information will be generated.</li>
- </ol>
- </section>
- </div>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content container">
+      <h1>TickerStats</h1>
+      <p>Automating the process of compiling financial stock data</p>
+      <button onclick="document.querySelector('.scroll-to').scrollIntoView({ behavior: 'smooth' })">Get Started</button>
+    </div>
+  </section>
+
+  <div class="scroll-to"></div>
+
+  <!-- Ticker Input and Data Section -->
+  <section class="ticker-section container">
+    <div class="ticker-container">
+      <div class="ticker-form">
+        <h2>Enter Ticker Symbol</h2>
+        <input type="text" id="ticker" placeholder="e.g., AAPL" />
+        <button id="fetch-data">Show Stock Info</button>
+        <div id="error-message"></div>
+      </div>
+      <div class="ticker-data">
+        <h2>Stock Metrics</h2>
+        <p><strong>ROE:</strong> <span id="roe">--</span></p>
+        <p><strong>ROA:</strong> <span id="roa">--</span></p>
+        <p><strong>Share Price:</strong> <span id="share-price">--</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Excel Export Section -->
+  <section class="export-section container">
+    <h2>Export to Excel</h2>
+    <p>Generate an Excel spreadsheet containing the compiled financial data. (Feature coming soon.)</p>
+    <button>Export Now</button>
+  </section>
+
+  <!-- FAQ Accordion Section -->
+  <section class="faq-section container">
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-item">
+      <h3>What is TickerStats?</h3>
+      <p>TickerStats is a web application designed to automate the process of compiling key financial metrics.</p>
+    </div>
+    <div class="faq-item">
+      <h3>How do I use the application?</h3>
+      <p>Simply enter a valid stock ticker symbol into the form. The system will display the corresponding stock metrics, including ROE, ROA, and share price.</p>
+    </div>
+    <div class="faq-item">
+      <h3>What financial data is provided?</h3>
+      <p>You will receive important metrics such as ROE, ROA, and share price, among others. More metrics are planned for future updates.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Is the Excel export feature working?</h3>
+      <p>The Excel generation functionality is currently in development and will be available in the final release.</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer-section container">
+    <p>&copy; 2024 TickerStats. All rights reserved.</p>
+  </footer>
+
+  <!-- JavaScript for Dynamic Interactions -->
+  <script>
+    // Ticker Symbol Submission
+    document.getElementById('fetch-data').addEventListener('click', function() {
+      const ticker = document.getElementById('ticker').value.trim();
+      const errorMessage = document.getElementById('error-message');
+      const stockDataDiv = {
+        roe: document.getElementById('roe'),
+        roa: document.getElementById('roa'),
+        sharePrice: document.getElementById('share-price')
+      };
+
+      if (!ticker) {
+        errorMessage.textContent = "Please enter a ticker symbol.";
+        return;
+      }
+      errorMessage.textContent = "";
+      // Dummy data for demonstration
+      stockDataDiv.roe.textContent = "15%";
+      stockDataDiv.roa.textContent = "8%";
+      stockDataDiv.sharePrice.textContent = "$120";
+    });
+
+    // FAQ Accordion Functionality
+    const faqItems = document.querySelectorAll('.faq-item');
+    faqItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const answer = item.querySelector('p');
+        // Toggle the display of the answer
+        answer.style.display = answer.style.display === 'block' ? 'none' : 'block';
+      });
+    });
+  </script>
 </body>
 </html>
