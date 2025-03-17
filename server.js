@@ -60,7 +60,7 @@ app.post('/api/stock-data', async (req, res) => {
       return res.status(404).json({ error: 'No data found for this ticker symbol' });
     }
 
-    const stockName = data.Name || 'Name not available';
+    const stockName = data.Name || 'Name not available (API rate limit reached)';
     const roe = parseRatioToPercentage(data.ReturnOnEquityTTM);
     const roa = parseRatioToPercentage(data.ReturnOnAssetsTTM);
 
