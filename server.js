@@ -13,7 +13,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
 const port = process.env.PORT || 3000;
 
-const ALPHA_VANTAGE_API_KEY = process.env.ALPHA_VANTAGE_API_KEY;
+const ALPHA_VANTAGE_API_KEY = process.env.ALPHA_VANTAGE_API_KEY || '17PO7BG4SUFRVG45';
 
 // Helper: Convert ratios to percentages
 function parseRatioToPercentage(ratio) {
@@ -22,9 +22,7 @@ function parseRatioToPercentage(ratio) {
   }
 
   let value = parseFloat(ratio);
-  if (value <= 1) {
-    value = value * 100;
-  }
+  value = value * 100;
 
   return `${value.toFixed(2)}%`;
 }
