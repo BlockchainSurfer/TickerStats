@@ -252,8 +252,9 @@
       </div>
       <div class="ticker-data">
         <h2>Stock Metrics</h2>
-        <p><strong>ROE:</strong> <span id="roe">--</span></p>
-        <p><strong>ROA:</strong> <span id="roa">--</span></p>
+        <p><strong>Stock Name:</strong> <span id="stock-name">--</span></p>
+        <p><strong>Return on Equity (ROE):</strong> <span id="roe">--</span></p>
+        <p><strong>Return on Assets (ROA):</strong> <span id="roa">--</span></p>
         <p><strong>Share Price:</strong> <span id="share-price">--</span></p>
       </div>
     </div>
@@ -295,25 +296,51 @@
   <!-- JavaScript for Dynamic Interactions -->
   <script>
     // Ticker Symbol Submission
-    document.getElementById('fetch-data').addEventListener('click', function() {
-      const ticker = document.getElementById('ticker').value.trim();
-      const errorMessage = document.getElementById('error-message');
-      const stockDataDiv = {
-        roe: document.getElementById('roe'),
-        roa: document.getElementById('roa'),
-        sharePrice: document.getElementById('share-price')
-      };
+    document.getElementById('fetch-data').addEventListener('click', async function() {
+    const ticker = document.getElementById('ticker').value.trim();
+    const errorMessage = document.getElementById('error-message');
+    const stockDataDiv = {
+    stockName: document.getElementById('stock-name'),
+    roe: document.getElementById('roe'),
+    roa: document.getElementById('roa'),
+    sharePrice: document.getElementById('share-price')
+  };
 
-      if (!ticker) {
-        errorMessage.textContent = "Please enter a ticker symbol.";
-        return;
-      }
-      errorMessage.textContent = "";
-      // Dummy data for demonstration
-      stockDataDiv.roe.textContent = "15%";
-      stockDataDiv.roa.textContent = "8%";
-      stockDataDiv.sharePrice.textContent = "$120";
+  if (!ticker) {
+    errorMessage.textContent = "Please enter a ticker symbol.";
+    return;
+  }
+
+  errorMessage.textContent = "Fetching data...";
+
+  try {
+    const response = await fetch('/api/stock-data', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ ticker: ticker })
     });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const data = await response.json();
+
+    // Update the UI with the backend data
+    stockDataDiv.stockName.textContent = data.stockName;
+    stockDataDiv.roe.textContent = data.roe;
+    stockDataDiv.roa.textContent = data.roa;
+    stockDataDiv.sharePrice.textContent = data.sharePrice;
+
+    errorMessage.textContent = "";
+  } catch (error) {
+    console.error('Fetch error:', error);
+    errorMessage.textContent = "Failed to fetch stock data.";
+  }
+});
+
 
     // FAQ Accordion Functionality
     const faqItems = document.querySelectorAll('.faq-item');
