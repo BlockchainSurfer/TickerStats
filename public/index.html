@@ -256,6 +256,12 @@
         <p><strong>Return on Equity (ROE):</strong> <span id="roe">--</span></p>
         <p><strong>Return on Assets (ROA):</strong> <span id="roa">--</span></p>
         <p><strong>Share Price:</strong> <span id="share-price">--</span></p>
+        <p><strong>P/E Ratio:</strong> <span id="pe-ratio">--</span></p>
+        <p><strong>Market Cap:</strong> <span id="market-cap">--</span></p>
+        <p><strong>Dividend Yield:</strong> <span id="dividend-yield">--</span></p>
+        <p><strong>52-Week High:</strong> <span id="high-52">--</span></p>
+        <p><strong>52-Week Low:</strong> <span id="low-52">--</span></p>
+
       </div>
     </div>
   </section>
@@ -299,46 +305,60 @@
     document.getElementById('fetch-data').addEventListener('click', async function() {
     const ticker = document.getElementById('ticker').value.trim();
     const errorMessage = document.getElementById('error-message');
+
+    // Stock Data Elements
     const stockDataDiv = {
-    stockName: document.getElementById('stock-name'),
-    roe: document.getElementById('roe'),
-    roa: document.getElementById('roa'),
-    sharePrice: document.getElementById('share-price')
-  };
+        stockName: document.getElementById('stock-name'),
+        roe: document.getElementById('roe'),
+        roa: document.getElementById('roa'),
+        sharePrice: document.getElementById('share-price'),
+        peRatio: document.getElementById('pe-ratio'),
+        marketCap: document.getElementById('market-cap'),
+        dividendYield: document.getElementById('dividend-yield'),
+        high52: document.getElementById('high-52'),
+        low52: document.getElementById('low-52')
+    };
 
-  if (!ticker) {
-    errorMessage.textContent = "Please enter a ticker symbol.";
-    return;
-  }
-
-  errorMessage.textContent = "Fetching data...";
-
-  try {
-    const response = await fetch('/api/stock-data', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ ticker: ticker })
-    });
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
+    if (!ticker) {
+        errorMessage.textContent = "Please enter a ticker symbol.";
+        return;
     }
 
-    const data = await response.json();
+    errorMessage.textContent = "Fetching data...";
 
-    // Update the UI with the backend data
-    stockDataDiv.stockName.textContent = data.stockName;
-    stockDataDiv.roe.textContent = data.roe;
-    stockDataDiv.roa.textContent = data.roa;
-    stockDataDiv.sharePrice.textContent = data.sharePrice;
+    try {
+        const response = await fetch('/api/stock-data', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ ticker: ticker })
+        });
 
-    errorMessage.textContent = "";
-  } catch (error) {
-    console.error('Fetch error:', error);
-    errorMessage.textContent = "Failed to fetch stock data.";
-  }
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+
+        // Update the UI with the backend data
+        stockDataDiv.stockName.textContent = data.stockName;
+        stockDataDiv.roe.textContent = data.roe;
+        stockDataDiv.roa.textContent = data.roa;
+        stockDataDiv.sharePrice.textContent = data.sharePrice;
+        stockDataDiv.peRatio.textContent = data.peRatio;
+        stockDataDiv.marketCap.textContent = data.marketCap;
+        stockDataDiv.dividendYield.textContent = data.dividendYield;
+        stockDataDiv.high52.textContent = data.high52;
+        stockDataDiv.low52.textContent = data.low52;
+
+        errorMessage.textContent = "";
+    } catch (error) {
+        console.error('Fetch error:', error);
+        errorMessage.textContent = "Failed to fetch stock data.";
+    }
+});
+
 });
 
 
