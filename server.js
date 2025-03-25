@@ -63,6 +63,11 @@ app.post('/api/stock-data', async (req, res) => {
     const stockName = data.Name || 'Name not available (API rate limit reached)';
     const roe = parseRatioToPercentage(data.ReturnOnEquityTTM);
     const roa = parseRatioToPercentage(data.ReturnOnAssetsTTM);
+    const peRatio = data.PERatio;
+    const marketCap = data.MarketCapitalization;
+    const dividendYield = parseRatioToPercentage(data.DividendYield);
+    const high52 = data['52WeekHigh'];
+    const low52 = data['52WeekLow'];
 
     // Fetch Share Price
     const sharePriceResponse = await axios.get(`https://www.alphavantage.co/query`, {
@@ -84,7 +89,12 @@ app.post('/api/stock-data', async (req, res) => {
       stockName,
       roe,
       roa,
-      sharePrice
+      sharePrice,
+      peRatio,
+      marketCap,
+      dividendYield,
+      high52,
+      low52
     });
 
   } catch (error) {
